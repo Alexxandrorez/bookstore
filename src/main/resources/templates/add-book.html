@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{book.add.title} + ' — ' + #{nav.brand}">Додати книгу — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/add-book.css}">
+
+</head>
+<body class="centered-layout">
+
+<div class="lang-switcher-fixed">
+    <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+    <span class="divider">|</span>
+    <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+</div>
+
+<div class="card form-card">
+    <h1 class="page-title" th:text="#{book.add.title}">Нова книга</h1>
+
+    <form th:action="@{/books/add}" th:object="${book}" method="post">
+
+        <div class="form-group">
+            <label th:text="#{book.field.name}">Назва книги</label>
+            <input type="text" th:field="*{name}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label th:text="#{book.author}">Автор</label>
+            <input type="text" th:field="*{author}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label th:text="#{book.field.description}">Опис</label>
+            <textarea th:field="*{description}" class="form-textarea"></textarea>
+        </div>
+
+        <div class="form-group-large">
+            <label th:text="#{book.field.price}">Ціна</label>
+            <input type="number" step="0.01" th:field="*{price}" class="form-input" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" th:text="#{btn.save}">Зберегти книгу</button>
+            <a th:href="@{/employee/dashboard}" class="btn-secondary btn-link" th:text="#{btn.cancel}">Скасувати</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

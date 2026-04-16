@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{clients.list.title}">База клієнтів - BookStore Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/">
+        <span th:text="#{nav.brand}">BookStore</span>
+        <small th:text="#{nav.admin}">ADMIN</small>
+    </a>
+
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk', page=${currentPage})}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en', page=${currentPage})}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+
+    <a th:href="@{/admin/dashboard}" class="btn-nav" th:text="#{nav.back.dashboard}">
+        Назад до панелі
+    </a>
+</nav>
+
+<div class="container">
+    <div class="header-flex">
+        <div>
+            <h1 th:text="#{clients.list.title}">База клієнтів</h1>
+            <p class="admin-lead" th:text="#{clients.list.lead}">
+                Повний перегляд зареєстрованих користувачів
+            </p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{clients.table.name}">Ім'я клієнта</th>
+            <th th:text="#{clients.table.email}">Email</th>
+            <th th:text="#{clients.table.balance}">Баланс</th>
+            <th class="text-right" th:text="#{clients.table.actions}">Дії</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.name}">Medelyn Wright</td>
+            <td th:text="${client.email}">client1@example.com</td>
+            <td th:text="${#numbers.formatDecimal(client.balance, 1, 2)} + ' ' + #{book.price.currency}">
+                1000,00 грн
+            </td>
+
+            <td class="text-right">
+
+                <a th:href="@{'/admin/clients/' + ${client.email}}"
+                   class="btn-outline"
+                   th:text="#{clients.action.profile}">
+                    Профіль
+                </a>
+
+                <div class="delete-wrapper" tabindex="0">
+
+                    <button type="button" class="btn-outline btn-danger"
+                            th:text="#{clients.action.delete}">
+                        Видалити
+                    </button>
+
+                    <div class="confirm-box">
+                        <span class="confirm-hint" th:text="#{clients.confirm.delete}">
+                            Ви впевнені?
+                        </span>
+
+                        <form th:action="@{/admin/clients/delete}"
+                              method="post"
+                              class="inline-form">
+
+                            <input type="hidden" name="email" th:value="${client.email}">
+
+                            <button type="submit"
+                                    class="btn-primary btn-danger btn-tiny">
+                                ТАК
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${totalPages > 1}" class="pagination-admin">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/clients/all(page=${currentPage - 1})}"
+           class="btn-outline"
+           th:text="#{paging.back}">
+            ← Назад
+        </a>
+
+        <div class="page-info">
+            <span th:text="#{paging.page}">Сторінка</span>
+            <strong th:text="${currentPage + 1}">1</strong>
+            <span th:text="#{paging.of}">з</span>
+            <strong th:text="${totalPages}">1</strong>
+        </div>
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/clients/all(page=${currentPage + 1})}"
+           class="btn-outline"
+           th:text="#{paging.forward}">
+            Вперед →
+        </a>
+    </div>
+
+    <div th:if="${clients.empty}" class="empty-orders">
+        <p th:text="#{clients.empty}">
+            Клієнтів поки що немає.
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

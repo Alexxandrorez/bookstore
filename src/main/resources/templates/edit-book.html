@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{book.edit.title} + ' — ' + #{nav.brand}">Редагування книги — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/" th:text="#{nav.brand}">BookStore</a>
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+</nav>
+
+<div class="container container-form-narrow">
+
+    <div class="card card-form-padding">
+        <h1 th:text="#{book.edit.title}">Редагувати книгу</h1>
+        <form th:action="@{/books/update}" th:object="${book}" method="post">
+
+            <input type="hidden" name="oldName" th:value="${oldName}">
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                <ul class="error-list">
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-uppercase">
+                <span th:text="${errorMessage}">Помилка</span>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{book.field.name}">Назва книги</label>
+                <input type="text" th:field="*{name}" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{book.author}">Автор</label>
+                <input type="text" th:field="*{author}" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{book.field.price}">Ціна</label>
+                <input type="number" th:field="*{price}" step="0.01" required>
+            </div>
+
+            <button type="submit" class="btn-primary btn-full-width" th:text="#{book.edit.btn.save}">Зберегти зміни</button>
+
+            <a th:href="@{/employee/dashboard}"
+               class="btn-outline btn-cancel-link"
+               th:text="#{btn.cancel}">
+                Скасувати
+            </a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

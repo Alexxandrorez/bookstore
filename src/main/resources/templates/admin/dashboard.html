@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{admin.title} + ' - ' + #{nav.brand}">Адмін-панель - BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/">
+        <span th:text="#{nav.brand}">BookStore</span>
+        <small style="opacity: 0.5; margin-left: 5px;">ADMIN</small>
+    </a>
+
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+            <span class="lang-divider">|</span>
+            <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <a href="/" class="btn-nav" th:text="#{nav.back.home}">На головну</a>
+    </div>
+</nav>
+
+<div class="container">
+    <header class="admin-header">
+        <h1 th:text="#{admin.title}">Панель керування</h1>
+        <p class="admin-lead" th:text="#{admin.lead}">Менеджмент персоналу та бази клієнтів</p>
+    </header>
+
+    <div class="dashboard-stats">
+
+        <div class="stat-card admin-manage-card">
+            <h2 class="section-heading" th:text="#{admin.employees.card.title}">Працівники</h2>
+            <p class="card-description" th:text="#{admin.employees.card.text}">Керування командою: додавання, зміна ролей та видалення.</p>
+
+            <div class="stat-focus">
+                <span class="stat-label" th:text="#{admin.employees.count.label}">В штаті</span>
+                <div class="stat-value" th:text="${employeeCount}">0</div>
+            </div>
+
+            <a th:href="@{/admin/employees}" class="btn-primary btn-full" th:text="#{admin.employees.manage}">Керувати</a>
+        </div>
+
+        <div class="stat-card admin-manage-card">
+            <h2 class="section-heading" th:text="#{admin.clients.card.title}">Клієнти</h2>
+            <p class="card-description" th:text="#{admin.clients.card.text}">Перегляд бази покупців та їх фінансової активності.</p>
+
+            <div class="stat-focus">
+                <span class="stat-label" th:text="#{admin.clients.count.label}">Покупців</span>
+                <div class="stat-value" th:text="${clientCount}">0</div>
+            </div>
+
+            <a th:href="@{/admin/clients/all}" class="btn-primary btn-full" th:text="#{admin.clients.view}">Переглянути</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

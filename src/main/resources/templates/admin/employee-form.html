@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{auth.register.title} + ' — ' + #{nav.brand}">Новий працівник — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/" th:text="#{nav.brand}">BookStore</a>
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+</nav>
+
+<div class="container container-form-narrow">
+    <div class="card card-form-padding">
+        <h1 th:text="#{auth.register.title}">Новий співробітник</h1>
+
+        <form th:action="@{/admin/employees/add}" th:object="${employee}" method="post" novalidate >
+
+            <div th:if="${errorMessage != null}" class="alert alert-danger alert-uppercase">
+                <span th:text="${errorMessage}">Помилка</span>
+            </div>
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                <ul class="error-list">
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.name}">Повне ім'я</label>
+                <input type="text" th:field="*{name}" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.email}">Email адреса</label>
+                <input type="email" th:field="*{email}" placeholder="example@mail.com" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.password}">Пароль</label>
+                <input type="password" th:field="*{password}"
+                       minlength="8" maxlength="64" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.phone}">Телефон</label>
+                <input type="text" th:field="*{phone}" placeholder="0509006007" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.birthdate}">Дата народження</label>
+                <input type="date" th:field="*{birthDate}" required>
+            </div>
+
+            <div class="form-group">
+                <label th:text="#{auth.field.role}">Роль у системі</label>
+                <select th:field="*{role}">
+                    <option th:value="EMPLOYEE" th:text="'EMPLOYEE (' + #{admin.employees.card.title} + ')'">EMPLOYEE</option>
+                    <option th:value="ADMIN" th:text="'ADMIN (' + #{nav.admin} + ')'">ADMIN</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary btn-full-width" th:text="#{auth.btn.register}">Зареєструвати</button>
+
+            <a th:href="@{/admin/employees}"
+               class="btn-outline btn-cancel-link"
+               th:text="#{profile.back}">
+                Скасувати та повернутись
+            </a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

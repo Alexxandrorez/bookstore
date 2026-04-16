@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{dashboard.orders.view} + ' — ' + #{nav.brand}">Деталі замовлення — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/emp-order-details.css}">
+
+</head>
+<body>
+
+<div class="lang-switcher-fixed">
+    <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+    <span class="lang-divider">|</span>
+    <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+</div>
+
+<div class="container container-order">
+    <a th:href="@{/employee/dashboard}" class="btn-outline back-link" th:text="#{paging.back}">
+        ← Назад до списку
+    </a>
+
+    <div th:if="${order != null}">
+        <h2 class="order-title" th:text="#{order.details.title} + ' ' + ${order.id}">Деталі замовлення</h2>
+
+        <div class="card order-card-content">
+            <div class="order-info-section">
+                <p>
+                    <strong th:text="#{order.field.client} + ':'">Клієнт:</strong>
+                    <span th:text="${order.clientEmail}"></span>
+                </p>
+                <p>
+                    <strong th:text="#{order.field.date} + ':'">Дата:</strong>
+                    <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span>
+                </p>
+            </div>
+
+            <hr class="order-hr">
+
+            <h4 class="items-heading" th:text="#{order.items.heading}">Товари:</h4>
+            <ul class="order-items-list">
+                <li th:each="item : ${order.bookItems}" class="order-item-row">
+                    <span th:text="${item.bookName}">Книга</span>
+                    <span class="item-quantity" th:text="${item.quantity} + ' ' + #{order.items.qty}">1 шт.</span>
+                </li>
+            </ul>
+
+            <hr class="order-hr">
+
+            <p class="order-total">
+                <strong th:text="#{order.total.label}">Разом до сплати:</strong>
+                <span class="total-price" th:text="${order.price} + ' ' + #{book.price.currency}"></span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card" th:if="${order == null}">
+        <p th:text="#{error.message.default}">Замовлення не знайдено.</p>
+    </div>
+</div>
+
+</body>
+</html>

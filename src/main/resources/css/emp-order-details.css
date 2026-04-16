@@ -1,0 +1,88 @@
+.container-order {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 0 20px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #1a1a1a;
+}
+
+.order-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    color: #1a1a1a;
+}
+
+.order-card-content {
+    background: #fff;
+    padding: 3rem;
+    border: 1px solid #e8e4de;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.order-info-section p {
+    margin: 0.8rem 0;
+    font-size: 1rem;
+    color: #444;
+}
+
+.order-info-section strong {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    margin-right: 10px;
+}
+
+.order-hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+}
+
+.items-heading {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.order-item-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.order-item-row:last-child {
+    border-bottom: none;
+}
+
+.item-quantity {
+    color: #888;
+    font-style: italic;
+}
+
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    font-size: 1.2rem;
+}
+
+.total-price {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}

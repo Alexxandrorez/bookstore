@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.name} + ' — ' + #{nav.brand}">Деталі книги</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/book-details.css}">
+</head>
+<body class="page-book-detail">
+
+<div class="lang-switcher-fixed">
+    <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+    <span class="lang-divider">|</span>
+    <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+</div>
+
+<main class="detail-card">
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}">Помилка</span>
+    </div>
+
+    <section class="book-header">
+        <p class="meta-label" th:text="#{book.details}">Деталі книги</p>
+        <h1 class="book-main-title" th:text="${book.name}">Назва книги</h1>
+        <p class="book-author-name" th:text="${book.author}">Автор</p>
+    </section>
+
+    <hr class="content-divider">
+
+    <section class="book-info">
+        <p class="book-price-row">
+            <span th:text="#{book.price.label}">Вартість:</span>
+            <span class="price-value" th:text="${book.price} + ' ' + #{book.price.currency}">0 грн</span>
+        </p>
+
+        <article class="book-description-text">
+            <p th:text="${book.description}">Опис книги</p>
+        </article>
+    </section>
+
+    <footer class="detail-actions">
+        <form sec:authorize="hasRole('CUSTOMER')" th:action="@{/orders/add}" method="post" class="inline-form">
+            <input type="hidden" name="bookName" th:value="${book.name}">
+            <input type="hidden" name="price" th:value="${book.price}">
+            <button type="submit" class="btn-primary" th:text="#{book.buy}">Купити</button>
+        </form>
+
+        <span sec:authorize="isAnonymous()" class="login-tip">
+            <a th:href="@{/login}" th:text="#{book.login.to.buy}">Увійдіть</a>, щоб купити цю книгу.
+        </span>
+
+        <a th:href="@{/books/all}" class="btn-secondary" th:text="#{paging.back}">← До каталогу</a>
+    </footer>
+
+    <hr class="content-divider">
+
+    <section class="reviews-section">
+        <h2 th:text="#{book.reviews.title}">Відгуки</h2>
+
+        <div sec:authorize="hasRole('CUSTOMER')" class="add-review-container">
+            <h4 th:text="#{book.reviews.add}">Залишити відгук</h4>
+            <form th:action="@{/reviews/add/{bookName}(bookName=${book.name})}" method="post">
+                <div class="rating-select">
+                    <label th:text="#{book.reviews.rating}">Оцінка:</label>
+                    <select name="rating" required>
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                </div>
+                <textarea name="comment" th:placeholder="#{book.reviews.placeholder}" required></textarea>
+                <button type="submit" class="btn-primary" th:text="#{book.reviews.submit}">Надіслати</button>
+            </form>
+        </div>
+
+        <div class="reviews-list">
+            <div th:if="${#lists.isEmpty(reviews)}" class="no-reviews">
+                <p th:text="#{book.reviews.empty}">Відгуків поки немає. Будьте першим!</p>
+            </div>
+
+            <div th:each="rev : ${reviews}" class="review-item">
+                <div class="review-header">
+                    <strong class="review-user" th:text="${rev.clientName}">User</strong>
+                    <span class="review-stars" th:text="${'⭐'.repeat(rev.rating)}">⭐⭐⭐⭐⭐</span>
+                    <small class="review-date" th:text="${#temporals.format(rev.createdAt, 'dd.MM.yyyy HH:mm')}">Date</small>
+                </div>
+                <p class="review-text" th:text="${rev.comment}">Текст відгуку</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

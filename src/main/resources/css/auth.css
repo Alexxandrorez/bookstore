@@ -1,0 +1,120 @@
+.auth-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px);
+    padding: 2rem;
+}
+
+.auth-panel {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-card {
+    background: #faf8f5;
+    padding: 2.5rem;
+    border: 1px solid #c2bdb6;
+    box-shadow: 10px 10px 0 rgba(26, 26, 26, 0.03);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    background: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
+}
+
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.auth-footer a {
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.container-form-narrow {
+    max-width: 500px;
+    margin: 4rem auto;
+}
+
+.card-form-padding {
+    padding: 3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: 15px 15px 0px rgba(26, 26, 26, 0.03);
+}
+
+h1 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.btn-full-width {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.btn-cancel-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    border: 1px solid transparent;
+}
+
+.btn-cancel-link:hover {
+    border-color: var(--border-color);
+    background: transparent;
+    color: var(--primary-black);
+}
+
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.alert-uppercase {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}

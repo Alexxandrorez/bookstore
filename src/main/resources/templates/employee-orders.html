@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{orders.assigned.title} + ' - ' + #{nav.brand}">Мої замовлення - Book Store</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/" th:text="#{nav.brand}">BookStore</a>
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+            <span class="lang-divider">|</span>
+            <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+
+        <span sec:authorize="isAuthenticated()" class="nav-user">
+            <span th:text="#{nav.welcome(${#authentication.name})}">Вітаємо, User!</span>
+        </span>
+        <a th:href="@{/employee/dashboard}" class="btn-nav" th:text="#{dashboard.title}">Панель</a>
+        <a th:href="@{/books/all}" class="btn-nav" th:text="#{nav.catalog}">Каталог</a>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="form-inline">
+            <button type="submit" class="btn-nav" th:text="#{nav.logout}">Вийти</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container container-narrow">
+    <h2 class="page-title" th:text="#{orders.assigned.title}">Замовлення, призначені вам</h2>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="empty-orders">
+        <p th:text="#{orders.assigned.empty}">Поки немає замовлень із вашим призначенням.</p>
+        <a th:href="@{/employee/dashboard}" class="btn-primary" th:text="#{orders.assigned.btn.dashboard}">До панелі</a>
+    </div>
+
+    <div th:each="order : ${orders}" class="order-card">
+        <div class="order-header">
+            <span class="order-id" th:text="#{orders.id} + ${order.id}">№1</span>
+            <span class="order-date"
+                  th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy, HH:mm')}">Дата</span>
+        </div>
+
+        <div class="order-content">
+            <div class="order-items-list">
+                <div th:each="item : ${order.bookItems}" class="book-item">
+                    <span th:text="${item.bookName}">Назва книги</span>
+                    <em th:text="'x' + ${item.quantity}">x1</em>
+                </div>
+            </div>
+            <div class="order-sum">
+                <span class="order-sum-label" th:text="#{dashboard.orders.sum}">Сума</span>
+                <span class="order-sum-value" th:text="${order.price} + ' ' + #{book.price.currency}">0.00 грн</span>
+                <a th:href="@{/employee/orders/{id}(id=${order.id})}" class="btn-outline" th:text="#{dashboard.orders.view}">Деталі</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

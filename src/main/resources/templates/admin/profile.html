@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{clients.action.profile} + ' | ' + #{nav.brand} + ' ' + #{nav.admin}">Профіль клієнта | BookStore Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/">
+        <span th:text="#{nav.brand}">BookStore</span>
+        <small th:text="#{nav.admin}">ADMIN</small>
+    </a>
+
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+</nav>
+
+<div class="container container-profile">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="avatar-circle" th:text="${#strings.substring(client.name, 0, 1)}">C</div>
+            <h1 class="profile-name" th:text="${client.name}">Madelin Wright</h1>
+            <span class="profile-tag" th:text="#{profile.status.regular}">Постійний клієнт</span>
+        </div>
+
+        <div class="balance-section">
+            <span class="balance-label" th:text="#{profile.balance.label}">Доступні кошти на рахунку</span>
+            <div class="balance-value" th:text="${#numbers.formatDecimal(client.balance, 1, 2)} + ' ' + #{book.price.currency}">1000.00 ₴</div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label" th:text="#{profile.email.label}">Електронна пошта</span>
+                <span class="detail-value" th:text="${client.email}">client1@example.com</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label" th:text="#{profile.id.label}">Унікальний код клієнта</span>
+                <span class="detail-value"
+                      th:text="${'#ID-' + #strings.toUpperCase(#strings.arraySplit(client.email, '@')[0])}">
+                    #ID-CLIENT1
+                </span>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a th:href="@{/admin/clients/all}" class="btn-outline btn-profile-back" th:text="#{profile.back}">Назад до списку</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

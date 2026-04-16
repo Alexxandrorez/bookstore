@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{admin.employees.title}">Штат працівників - BookStore Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/">
+        <span th:text="#{nav.brand}">BookStore</span>
+        <small th:text="#{nav.admin}">ADMIN</small>
+    </a>
+
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk', page=${currentPage})}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en', page=${currentPage})}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+
+    <a th:href="@{/admin/dashboard}" class="btn-nav" th:text="#{nav.back.dashboard}">Назад до панелі</a>
+</nav>
+
+<div class="container">
+    <div class="header-flex">
+        <div>
+            <h1 th:text="#{admin.employees.header}">Штат працівників</h1>
+            <p class="admin-lead" th:text="#{admin.employees.lead}">Керування доступом та персональними даними команди</p>
+        </div>
+        <a th:href="@{/admin/employees/new}" class="btn-primary" th:text="#{admin.employees.btn.add}">+ Додати працівника</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{admin.employees.table.name}">Ім'я</th>
+            <th th:text="#{auth.field.email}">Email</th>
+            <th th:text="#{admin.employees.table.phone}">Телефон</th>
+            <th th:text="#{admin.employees.table.role}">Роль</th>
+            <th class="col-actions-narrow text-right" th:text="#{dashboard.orders.actions}">Дії</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp : ${employees}">
+            <td th:text="${emp.name}">John Doe</td>
+            <td th:text="${emp.email}">john@example.com</td>
+            <td th:text="${emp.phone}">+380...</td>
+            <td>
+                <span th:class="${emp.role != null && emp.role.toString() == 'ADMIN'} ? 'role-badge role-admin' : 'role-badge'"
+                      th:text="${emp.role}">ROLE</span>
+            </td>
+            <td class="text-right">
+                <div th:if="${#authentication.name != emp.email}" class="delete-wrapper" tabindex="0">
+                    <button type="button" class="btn-outline btn-danger" th:text="#{clients.action.delete}">Видалити</button>
+                    <div class="confirm-box">
+                        <span class="confirm-hint" th:text="#{admin.employees.confirm.hint}">Ви впевнені?</span>
+                        <form th:action="@{/admin/employees/delete}" method="post" class="inline-form">
+                            <input type="hidden" name="email" th:value="${emp.email}">
+                            <button type="submit" class="btn-primary btn-danger btn-tiny" th:text="#{btn.confirm.yes}">ТАК</button>
+                        </form>
+                    </div>
+                </div>
+                <span th:if="${#authentication.name == emp.email}" class="self-note" th:text="#{admin.employees.self.note}">Це ви</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${totalPages > 1}" class="pagination-admin">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/employees(page=${currentPage - 1})}"
+           class="btn-outline" th:text="#{paging.back}">← Назад</a>
+
+        <div class="page-info">
+            <span th:text="#{paging.page}">Сторінка</span>
+            <strong th:text="${currentPage + 1}">1</strong>
+            <span th:text="#{paging.of}">з</span>
+            <strong th:text="${totalPages}">1</strong>
+        </div>
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/employees(page=${currentPage + 1})}"
+           class="btn-outline" th:text="#{paging.forward}">Вперед →</a>
+    </div>
+
+    <div th:if="${employees.empty}" class="empty-orders">
+        <p th:text="#{admin.employees.empty}">Працівників не знайдено.</p>
+    </div>
+</div>
+
+<script>
+    if ('history' in window && 'scrollRestoration' in window) {
+        history.scrollRestoration = 'manual';
+    }
+
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem("scrollPos_" + window.location.pathname, window.scrollY);
+    });
+
+    window.addEventListener('load', () => {
+        const scrollPos = localStorage.getItem("scrollPos_" + window.location.pathname);
+        if (scrollPos) {
+            window.scrollTo({
+                top: parseInt(scrollPos),
+                behavior: 'auto'
+            });
+            localStorage.removeItem("scrollPos_" + window.location.pathname);
+        }
+    });
+</script>
+</body>
+</html>

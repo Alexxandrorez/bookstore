@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="(${isWishlistPage} ? #{nav.wishlist} : #{catalog.title}) + ' — ' + #{nav.brand}">Каталог книг — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/catalog.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/" th:text="#{nav.brand}">BOOKSTORE</a>
+
+    <div class="nav-links" style="display: inline-block; margin-left: 20px;">
+        <a sec:authorize="hasRole('CUSTOMER')" th:href="@{/wishlist}" class="btn-outline"
+           th:style="${isWishlistPage} ? 'background: #333; color: white;' : ''"
+           th:text="#{nav.wishlist}">Улюблене</a>
+    </div>
+
+    <div class="lang-switcher">
+        <a th:href="@{''(lang='uk', page=${currentPage}, sortBy=${sortBy}, direction=${direction}, query=${query})}"
+           th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+        <span class="lang-divider">|</span>
+        <a th:href="@{''(lang='en', page=${currentPage}, sortBy=${sortBy}, direction=${direction}, query=${query})}"
+           th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+    </div>
+</nav>
+
+<div class="container">
+    <header class="catalog-header">
+        <div>
+            <p class="catalog-subtitle" th:text="#{catalog.subtitle}">Каталог</p>
+            <h2 class="catalog-title" th:text="${isWishlistPage} ? #{nav.wishlist} : #{catalog.title}">Наші книги</h2>
+        </div>
+
+        <div class="search-container" th:if="${isWishlistPage == null}">
+            <form th:action="@{/books/search}" method="get" class="search-form">
+                <input type="text" name="query" th:value="${query}"
+                       th:placeholder="#{search.placeholder}" class="search-input">
+                <button type="submit" class="btn-search" th:text="#{search.button}">Шукати</button>
+            </form>
+        </div>
+
+        <div class="sort-container" th:if="${isWishlistPage == null}">
+            <span class="sort-label" th:text="#{catalog.sort.label}">Сортувати:</span>
+            <div class="sort-select-wrapper">
+                <select onchange="location = this.value;" class="sort-select">
+                    <option th:value="@{${query != null && query != '' ? '/books/search' : '/books/all'}(sortBy='name', direction='asc', lang=${#locale.language}, query=${query})}"
+                            th:selected="${sortBy == 'name' && direction == 'asc'}" th:text="#{catalog.sort.name.asc}">Назвою (А-Я)</option>
+
+                    <option th:value="@{${query != null && query != '' ? '/books/search' : '/books/all'}(sortBy='name', direction='desc', lang=${#locale.language}, query=${query})}"
+                            th:selected="${sortBy == 'name' && direction == 'desc'}" th:text="#{catalog.sort.name.desc}">Назвою (Я-А)</option>
+
+                    <option th:value="@{${query != null && query != '' ? '/books/search' : '/books/all'}(sortBy='price', direction='asc', lang=${#locale.language}, query=${query})}"
+                            th:selected="${sortBy == 'price' && direction == 'asc'}" th:text="#{catalog.sort.price.asc}">Ціною (спочатку дешевші)</option>
+
+                    <option th:value="@{${query != null && query != '' ? '/books/search' : '/books/all'}(sortBy='price', direction='desc', lang=${#locale.language}, query=${query})}"
+                            th:selected="${sortBy == 'price' && direction == 'desc'}" th:text="#{catalog.sort.price.desc}">Ціною (спочатку дорожчі)</option>
+                </select>
+                <span class="sort-arrow">▼</span>
+            </div>
+        </div>
+    </header>
+
+    <div th:if="${message}" class="alert-msg alert-success">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div th:if="${error}" class="alert-msg alert-error">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(books)}" class="no-results">
+        <p th:text="${isWishlistPage} ? 'Ваш список порожній' : #{search.notfound}">Нічого не знайдено.</p>
+    </div>
+
+    <div class="grid">
+        <div class="book-card" th:each="book : ${books}">
+            <div class="book-card-top">
+                <p class="book-author-label" th:text="#{book.author}">Автор</p>
+                <h3 class="book-title" th:text="${book.name}">Назва книги</h3>
+            </div>
+
+            <div class="book-card-bottom">
+                <p class="book-price" th:text="${book.price} + ' ' + #{book.price.currency}">0 грн</p>
+
+                <div class="book-actions">
+                    <a th:href="@{/books/details/{name}(name=${book.name})}" class="btn-outline" th:text="#{book.details}">Детальніше</a>
+
+                    <form sec:authorize="hasRole('CUSTOMER')"
+                          th:action="@{/wishlist/toggle/{name}(name=${book.name})}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit"
+                                th:class="${wishlistBookNames != null && wishlistBookNames.contains(book.name)} ? 'wishlist-btn active' : 'wishlist-btn'"
+                                title="Wishlist">
+                            ❤
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${totalPages > 1 && isWishlistPage == null}" class="pagination-row">
+        <a th:if="${currentPage > 0}"
+           th:href="@{${query != null && query != '' ? '/books/search' : '/books/all'}(page=${currentPage - 1}, sortBy=${sortBy}, direction=${direction}, lang=${#locale.language}, query=${query})}"
+           class="btn-outline btn-paging" th:text="#{paging.back}">← Назад</a>
+
+        <div class="pagination-info">
+            <span th:text="#{paging.page}">Сторінка</span>
+            <span class="current-page" th:text="${currentPage + 1}">1</span>
+            <span th:text="#{paging.of}">з</span>
+            <span class="total-pages" th:text="${totalPages}">10</span>
+        </div>
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{${query != null && query != '' ? '/books/search' : '/books/all'}(page=${currentPage + 1}, sortBy=${sortBy}, direction=${direction}, lang=${#locale.language}, query=${query})}"
+           class="btn-outline btn-paging" th:text="#{paging.forward}">Вперед →</a>
+    </div>
+
+    <a href="/" class="btn-outline back-home-link" th:text="#{nav.back.home}" style="margin-top: 20px; display: inline-block;">
+        ← Назад на головну
+    </a>
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{nav.brand}">Book Store</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/catalog.css}">
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="/" th:text="#{nav.brand}">BookStore</a>
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+            <span style="color: #eee;">|</span>
+            <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+
+        <span sec:authorize="isAuthenticated()" class="nav-user">
+            <span th:text="#{nav.welcome(${#authentication.name})}">Вітаємо, User!</span>
+        </span>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn-nav" th:text="#{nav.login}">Увійти</a>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="form-inline">
+            <button type="submit" class="btn-nav btn-nav-danger" th:text="#{nav.logout}">Вийти</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container container-narrow">
+    <div class="hero">
+        <p class="hero-meta" th:text="#{home.hero.meta}">Книгарня · Львів</p>
+        <h1 th:text="#{home.hero.welcome}">Ласкаво просимо до нашої книгарні</h1>
+        <p class="hero-lead" th:text="#{home.hero.lead}">Тут ви знайдете найкращі книги для будь-якого віку.</p>
+        <hr class="hero-divider">
+
+        <div class="hero-actions">
+            <a th:href="@{/books/all}" class="btn-primary" th:text="#{home.btn.browse}">Переглянути книги</a>
+
+            <a sec:authorize="hasRole('CUSTOMER')"
+               th:href="@{/orders/client}"
+               class="btn-outline" th:text="#{orders.title}">Мої замовлення</a>
+
+            <a sec:authorize="hasRole('EMPLOYEE')"
+               th:href="@{/employee/dashboard}"
+               class="btn-outline" th:text="#{dashboard.title}">Панель управління</a>
+
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/admin/dashboard}"
+               class="btn-outline btn-danger" th:text="#{admin.title}">Панель Адміністратора</a>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3 th:text="#{home.about.title}">Про нас</h3>
+            <p class="info-text" th:text="#{home.about.text}">Ми — найкращий сервіс у Львові для поціновувачів літератури.</p>
+        </div>
+        <div class="info-card">
+            <h3 th:text="#{home.delivery.title}">Доставка</h3>
+            <p class="info-text" th:text="#{home.delivery.text}">Швидка доставка по всій Україні протягом 1–2 днів.</p>
+        </div>
+        <div class="info-card">
+            <h3 th:text="#{home.contacts.title}">Контакти</h3>
+            <p class="info-text">Email: support@bookstore.ua<br>Тел: +380 93 123 45 67</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

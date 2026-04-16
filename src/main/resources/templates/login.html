@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{auth.login.title} + ' — ' + #{nav.brand}">Вхід — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body class="auth-page">
+
+<nav>
+    <a class="brand" th:href="@{/}" th:text="#{nav.brand}">BookStore</a>
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+            <span style="color: #eee;">|</span>
+            <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <a th:href="@{/}" class="btn-nav" th:text="#{nav.back.home}">На головну</a>
+    </div>
+</nav>
+
+<main class="auth-layout">
+    <div class="auth-panel">
+        <h1 class="auth-title" th:text="#{auth.login.title}">Вхід</h1>
+
+        <div class="auth-card">
+            <div th:if="${param.error}" class="alert alert-danger" th:text="#{auth.error.login}">
+                Невірний email або пароль.
+            </div>
+
+            <div th:if="${param.success}" class="alert alert-success" th:text="#{auth.success.register}">
+                Акаунт успішно створено!
+            </div>
+
+            <div th:if="${param.logout}" class="alert alert-muted" th:text="#{auth.logout.msg}">
+                Ви успішно вийшли з системи.
+            </div>
+
+            <form th:action="@{/login}" method="post" novalidate>
+                <div class="form-group">
+                    <label for="username" th:text="#{auth.field.email}">Email</label>
+                    <input type="email" id="username" name="username" autocomplete="username"
+                           placeholder="example@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" th:text="#{auth.field.password}">Пароль</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password"
+                           placeholder="••••••••" minlength="8" maxlength="64" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" th:text="#{auth.btn.login}">Увійти</button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <span th:text="#{auth.no.account}">Немає акаунту?</span>
+                <a th:href="@{/register}" th:text="#{auth.btn.register}">Зареєструватися</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

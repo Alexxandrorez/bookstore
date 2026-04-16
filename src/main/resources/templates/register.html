@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{auth.register.title} + ' — ' + #{nav.brand}">Реєстрація — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body class="auth-page">
+
+<nav>
+    <a class="brand" th:href="@{/}" th:text="#{nav.brand}">BookStore</a>
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <a th:href="@{''(lang='uk')}" th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+            <span style="color: #eee;">|</span>
+            <a th:href="@{''(lang='en')}" th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <a th:href="@{/login}" class="btn-nav" th:text="#{nav.login}">Увійти</a>
+    </div>
+</nav>
+
+<main class="auth-layout">
+    <div class="auth-panel">
+        <h1 class="auth-title" th:text="#{auth.register.title}">Створити акаунт</h1>
+
+        <div class="auth-card">
+
+            <form th:action="@{/register}" th:object="${client}" method="post" novalidate>
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                    <ul style="margin: 0; padding-left: 1rem;">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" th:text="#{auth.field.name}">Повне ім'я</label>
+                    <input type="text" id="name" th:field="*{name}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" th:text="#{auth.field.email}">Email</label>
+                    <input type="email" id="email" th:field="*{email}" placeholder="example@mail.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" th:text="#{auth.field.password}">Пароль</label>
+                    <input type="password" id="password" th:field="*{password}"
+                           minlength="8" maxlength="64" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" th:text="#{auth.btn.register}">Зареєструватися</button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <span th:text="#{auth.have.account}">Вже маєте акаунт?</span>
+                <a th:href="@{/login}" th:text="#{auth.btn.login}">Увійти</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

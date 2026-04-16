@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{dashboard.title} + ' — ' + #{nav.brand}">Панель управління працівника — BookStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+</head>
+<body>
+
+<div class="container container-wide">
+    <div class="toolbar-row">
+        <a th:href="@{/books/all}" class="btn-outline link-quiet" th:text="'← ' + #{nav.catalog}">← До каталогу</a>
+
+        <div class="toolbar-right">
+            <div class="lang-switcher-dashboard">
+                <a th:href="@{''(lang='uk', ordersPage=${ordersPage.number}, booksPage=${booksPage.number})}"
+                   th:class="${#locale.language == 'uk' ? 'active' : ''}">UA</a>
+                <span class="lang-divider">|</span>
+                <a th:href="@{''(lang='en', ordersPage=${ordersPage.number}, booksPage=${booksPage.number})}"
+                   th:class="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+            </div>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-nav link-quiet" th:text="#{nav.logout}">Вийти</button>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="dashboard-title" th:text="#{dashboard.title}">Панель управління</h2>
+
+    <div class="dashboard-stats">
+        <div class="card stat-card">
+            <span class="stat-label" th:text="#{dashboard.stat.orders}">Всього замовлень</span>
+            <p class="stat-value" th:text="${totalOrdersCount}">0</p>
+        </div>
+        <div class="card stat-card">
+            <span class="stat-label" th:text="#{dashboard.stat.books}">Книг у продажу</span>
+            <p class="stat-value" th:text="${totalBooksCount}">0</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-heading" th:text="#{dashboard.orders.heading}">Замовлення</h3>
+        <table>
+            <thead>
+            <tr>
+                <th th:text="#{dashboard.orders.id}">ID</th>
+                <th th:text="#{dashboard.orders.client}">Клієнт</th>
+                <th th:text="#{dashboard.orders.sum}">Сума</th>
+                <th th:text="#{dashboard.orders.date}">Дата</th>
+                <th th:text="#{dashboard.orders.actions}">Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${ordersPage.content}">
+                <td th:text="'#' + ${order.id}">#1</td>
+                <td th:text="${order.clientEmail}">email@test.com</td>
+                <td th:text="${order.price} + ' ' + #{book.price.currency}">0 грн</td>
+                <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}">Дата</td>
+                <td>
+                    <a th:href="@{/employee/orders/{id}(id=${order.id})}" class="btn-action" th:text="#{dashboard.orders.view}">Переглянути</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${ordersPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${ordersPage.hasPrevious()}"
+               th:href="@{/employee/dashboard(ordersPage=${ordersPage.number - 1}, booksPage=${booksPage.number})}"
+               class="btn-action" th:text="#{paging.back}">← Назад</a>
+
+            <div class="pagination-info">
+                <span th:text="#{paging.page}">Сторінка</span> <strong th:text="${ordersPage.number + 1}">1</strong> <span th:text="#{paging.of}">з</span> <strong th:text="${ordersPage.totalPages}">1</strong>
+            </div>
+
+            <a th:if="${ordersPage.hasNext()}"
+               th:href="@{/employee/dashboard(ordersPage=${ordersPage.number + 1}, booksPage=${booksPage.number})}"
+               class="btn-action" th:text="#{paging.forward}">Вперед →</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header-row">
+            <h3 class="section-heading heading-no-margin" th:text="#{dashboard.catalog.title}">Каталог книг</h3>
+            <a th:href="@{/books/add}" class="btn-action btn-add-book" th:text="#{dashboard.book.add}">+ Додати книгу</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th th:text="#{book.field.name}">Назва</th>
+                <th th:text="#{book.author}">Автор</th>
+                <th th:text="#{book.field.price}">Ціна</th>
+                <th class="col-actions" th:text="#{dashboard.orders.actions}">Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${booksPage.content}">
+                <td>
+                    <a th:href="@{/books/details/{name}(name=${book.name})}"
+                       th:text="${book.name}"
+                       class="book-title-link">Назва</a>
+                </td>
+                <td th:text="${book.author}">Автор</td>
+                <td th:text="${book.price} + ' ' + #{book.price.currency}">0</td>
+                <td>
+                    <div class="table-actions">
+                        <a th:href="@{/books/edit/{name}(name=${book.name})}" class="btn-action" th:text="#{book.action.edit}">Редагувати</a>
+
+                        <div class="delete-wrapper" tabindex="0">
+                            <button type="button" class="btn-action btn-danger" th:text="#{clients.action.delete}">Видалити</button>
+                            <div class="confirm-box">
+                                <span class="confirm-hint" th:text="#{dashboard.confirm.delete}">Видалити?</span>
+                                <form th:action="@{/books/delete}" method="post" class="inline-form">
+                                    <input type="hidden" name="name" th:value="${book.name}">
+                                    <button type="submit" class="btn-primary btn-danger btn-tiny" th:text="#{dashboard.btn.yes}">ТАК</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${booksPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${booksPage.hasPrevious()}"
+               th:href="@{/employee/dashboard(booksPage=${booksPage.number - 1}, ordersPage=${ordersPage.number})}"
+               class="btn-action" th:text="#{paging.back}">← Назад</a>
+
+            <div class="pagination-info">
+                <span th:text="#{paging.page}">Сторінка</span> <strong th:text="${booksPage.number + 1}">1</strong> <span th:text="#{paging.of}">з</span> <strong th:text="${booksPage.totalPages}">1</strong>
+            </div>
+
+            <a th:if="${booksPage.hasNext()}"
+               th:href="@{/employee/dashboard(booksPage=${booksPage.number + 1}, ordersPage=${ordersPage.number})}"
+               class="btn-action" th:text="#{paging.forward}">Вперед →</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
